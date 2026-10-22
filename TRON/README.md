@@ -3,8 +3,8 @@
 
 **Objetivo:** `http://172.17.0.2/` (contenedor DockerLabs, red local de laboratorio)
 **Fecha:** 22 de octubre de 2026
-**Tipo de prueba:** Auditoría de seguridad / hacking ético con autorización sobre entorno de laboratorio
-**Resultado global:** **CRÍTICO — compromiso total del sistema (root)**
+**Autor:** 4nonymo
+**Nivel:** **FÁCIL**
 **Flag obtenida:** `DL{disco}`
 
 ---
@@ -55,7 +55,8 @@ La enumeración web con diccionarios (`common.txt`, `raft-medium-directories.txt
 La imagen publicada en la web (`/tron.jpg`) contenía un archivo embebido mediante `steghide` protegido con **contraseña vacía**:
 
 ```bash
-steghide extract -sf tron.jpg -p "" -xf disco.txt
+steghide extract -sf tron.jpg -p "" 2>&1 | tail -15
+wrote extracted data to "disco.txt".
 cat disco.txt
 ```
 
